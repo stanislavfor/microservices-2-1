@@ -1,0 +1,24 @@
+server:
+  port: 8082  # Порт для frontend-service
+
+spring:
+  application:
+    name: frontend-service
+  thymeleaf:
+    prefix: classpath:/templates/  # Путь к папке шаблонов
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+  mvc:
+    static-path-pattern: /static/**
+
+logging:
+  level:
+    org.springframework: INFO
+
+
+
+
+
+

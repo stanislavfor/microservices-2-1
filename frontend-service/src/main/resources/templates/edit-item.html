@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Item</title>
+    <link rel="icon" th:href="@{/favicon.ico}" sizes="any" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        h2 {
+            text-align: center;
+            color: gray;
+        }
+
+        h4 {
+            text-align: end;
+            display: block;
+            color: grey;
+        }
+
+        .header,
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100px;
+            max-width: 1000px;
+            width: 100%;
+            background: #BFFF7E;
+            box-sizing: border-box;
+        }
+
+        .container {
+            margin: auto 0;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #EFEDED;
+            align-items: center;
+        }
+
+        .headline {
+            font-size: 1.5em;
+            margin-top: 0px;
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .container-form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            padding-top: 50px;
+            padding-bottom: 50px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(191, 255, 126, 0.5);
+        }
+
+        .form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        label {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .form input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .buttons button {
+            width: 48%;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.6s ease, box-shadow 0.3s ease;
+        }
+
+        .buttons button[type="button"] {
+            background-color: #BFFF7E;
+            color: #000000;
+        }
+
+        .buttons button[type="button"]:hover {
+            background-color: #0056b3;
+            color: #ffffff;
+        }
+
+        .button {
+            width: 100%;
+            height: 40px;
+            background-color: #BFFF7E;
+            color: #000000;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.6s ease, box-shadow 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+            color: #ffffff;
+        }
+
+        .footer-2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100px;
+            max-width: 1000px;
+            padding-bottom: 60px;
+            background-color: #BFFF7E;
+        }
+
+        .footer-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 50px;
+            margin-left: 70px;
+            transition: color 0.6s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+<div class="header"></div>
+<h2>Edit Image</h2>
+<!--<form class="input" th:action="@{/images/update/{id}(id=${item.id})}" method="post" enctype="multipart/form-data">-->
+<form th:action="@{/images/update/{filename}(filename=${item.link})}" method="post" enctype="multipart/form-data">
+<!--    <img th:src="@{'/uploads/images/' + ${item.link}}" alt="image">-->
+    <img th:src="@{'/uploads/images/' + ${item.link}}" alt="image">
+    <div style="display: flex; justify-content: flex-start;">
+        <p>ID: </p>
+        <p th:text="${item.id}">10</p>
+    </div>
+    <input type="hidden" name="id" th:value="${item.id}" />
+    <input class="input" type="text" name="name" th:value="${item.name}">
+    <input class="input" type="text" name="description" th:value="${item.description}">
+    <!-- Убираем th:value для поля file -->
+    <input class="input" type="text" name="link">
+    <span></span>
+    <button type="submit" class="button">Save</button>
+</form>
+
+<br>
+<br>
+<div class="footer"></div>
+</body>
+
+</html>

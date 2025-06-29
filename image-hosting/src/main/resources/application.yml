@@ -1,0 +1,29 @@
+server:
+  port: 8084  # Порт для image-hosting
+
+spring:
+  application:
+    name: image-hosting
+  datasource:
+    url: jdbc:postgresql://localhost:5432/images_db
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  thymeleaf:
+    cache: false
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+  file:
+    upload-dir: ./uploads/images
+
+logging:
+  level:
+    org.springframework:
+      web: DEBUG
+      servlet: DEBUG

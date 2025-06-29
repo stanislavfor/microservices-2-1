@@ -1,0 +1,37 @@
+server:
+  port: 8090  # Порт для API Gateway
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: frontend-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/index
+            - Path=/email-page
+            - Path=/oops
+        - id: image-ui
+          uri: http://localhost:8084
+          predicates:
+            - Path=/images/**
+
+        - id: image-api
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/images/**
+          filters:
+            - StripPrefix=1
+        - id: images-edit
+          uri: http://localhost:8084
+          predicates:
+            - Path=/images/edit/**
+
+logging:
+  level:
+    org.springframework:
+      cloud: DEBUG
+      web: DEBUG
+
+  main:
+    web-application-type: reactive
