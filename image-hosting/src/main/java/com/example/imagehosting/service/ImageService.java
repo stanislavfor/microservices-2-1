@@ -11,35 +11,52 @@ import java.util.Optional;
 @Service
 public class ImageService {
 
-    @Autowired
-    private ItemRepository itemRepository;
+    private final ItemRepository itemRepository;
 
-    // Метод для получения изображения по имени файла
-    public Item getItemByFilename(String filename) {
-        return itemRepository.findByLink(filename);
+    @Autowired
+    public ImageService(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
     }
 
-    // Получение всех изображений
-    public List<Item> getAllItems() {
+    // Сохранить изображение
+    public Item saveItem(Item item) {
+        return itemRepository.save(item);
+    }
+
+    // Получить все изображения
+    public List<Item> findAll() {
         return itemRepository.findAll();
     }
 
-    // Сохранение изображения
-    public void saveItem(Item item) {
-        itemRepository.save(item);
+    // Получить изображение по ID
+    public Item findById(Long id) {
+        return itemRepository.findById(id).orElse(null);
     }
 
-    // Удаление изображения по ID
-    public void deleteItem(Long id) {
+    // Обновить изображение по ID
+    public Item updateImage(Long id, Item updatedItem) {
+        Optional<Item> optional = itemRepository.findById(id);
+        if (optional.isPresent()) {
+            Item item = optional.get();
+            // Обновляем нужные поля
+            item.setName(updatedItem.getName());
+            item.setDescription(updatedItem.getDescription());
+            item.setLink(updatedItem.getLink());
+            // Если есть другие поля, добавь их сюда
+            return itemRepository.save(item);
+        } else {
+            // Вместо null выбрасываем исключение, чтобы обработать ошибку
+            throw new RuntimeException("Image not found with id: " + id);
+        }
+    }
+
+    // Удалить изображение по ID
+    public void deleteImage(Long id) {
         itemRepository.deleteById(id);
     }
 
-    // Получение изображения по ID
-    public Item getItemById(Long id) {
-        Optional<Item> item = itemRepository.findById(id);
-        return item.orElse(null);  // Если не найдено, возвращаем null
+    // Получить изображение по имени файла (если нужно)
+    public Item getItemByFilename(String filename) {
+        return itemRepository.findByLink(filename);
     }
-
-//    public void clearAllItems() {
-//    }
 }

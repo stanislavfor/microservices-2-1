@@ -11,40 +11,52 @@ import java.nio.file.Paths;
 @Service
 public class FileService {
 
-    // Путь к папке для загрузки изображений (жёстко прописан)
-    private final String uploadDir = "/uploads/images";
+    private final String uploadDir = "./uploads/images";
 
-    public boolean saveFile(MultipartFile file) {
+    // Сохранение файла с уникальным именем. Возвращает имя для ссылки
+    public String saveFile(MultipartFile file) {
         try {
-            // Путь для сохранения файла
             Path path = Paths.get(uploadDir);
-
-            // Проверка на существование директории и её создание при необходимости
             if (!Files.exists(path)) {
-                Files.createDirectories(path);  // Создание директории, если её нет
+                Files.createDirectories(path);
             }
-
-            // Генерация уникального имени для файла
+            // Генерация уникального имени файла
             String filename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
             Path filePath = path.resolve(filename);
+            file.transferTo(filePath);
+            return filename;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-            // Сохранение файла
-            file.transferTo(filePath);  // Запись файла в директорию
-
+    /*/ Сохранение файла под заданным именем, например, для обновления
+     *
+     */
+    public boolean saveFile(MultipartFile file, String filename) {
+        try {
+            Path path = Paths.get(uploadDir);
+            if (!Files.exists(path)) {
+                Files.createDirectories(path);
+            }
+            Path filePath = path.resolve(filename);
+            file.transferTo(filePath);
             return true;
         } catch (IOException e) {
-            e.printStackTrace();  // Вывод ошибок, если не удалось сохранить файл
+            e.printStackTrace();
             return false;
         }
     }
 
+
+    // Удаление файла по имени
     public boolean deleteFile(String filename) {
         try {
-            // Путь к файлу для удаления
             Path filePath = Paths.get(uploadDir, filename);
-            return Files.deleteIfExists(filePath);  // Удаление файла, если он существует
+            return Files.deleteIfExists(filePath);
         } catch (IOException e) {
-            e.printStackTrace();  // Вывод ошибок, если не удалось удалить файл
+            e.printStackTrace();
             return false;
         }
     }

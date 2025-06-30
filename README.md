@@ -1,3 +1,25 @@
+### Порядок запуска модулей
+<p id="start-list">Использовать следующую последовательность команд для корректного запуска:</p>
+
+```bash
+cd frontend-service
+mvn clean install
+mvn spring-boot:run
+
+cd ../image-hosting
+mvn clean install
+mvn spring-boot:run
+
+cd ../api-gateway
+mvn clean install
+mvn spring-boot:run
+```
+Главную страницу открывать по адресу:
+
+```
+ http://localhost:8090/index
+```
+
 ## 1. Сборка проекта (Первый вариант)
 
 ```bash
@@ -98,7 +120,7 @@ my-app.html
 
 ## Главная страница (index.html):
 
-### URL: http://localhost:8084/
+### URL: http://localhost:8090/
 
 <br><br>
 
@@ -171,3 +193,71 @@ Redirect и редиректы - тестируем редиректы на ст
 ```bash
   mvn spring-boot:run -X
 ```
+##
+### Список сервисов с возвращаемыми данными
+1. **Gateway** - маршрутизирует HTML запросы к frontend, API - к image-hosting.
+2. **frontend-service** - возвращает только HTML-шаблоны, все `@Controller` и `return "index"`, и т.д.
+3. **image-hosting** - только API (JSON, файлы, данные), никаких возвращений шаблонов.
+
+
+### Текущий запуск сервисов
+Сервисы работают на портах:
+
+1. port **8090** - gateway
+2. port **8082** - frontend-service
+3. port **8084** - image-hosting
+
+##
+### Доступные ссылки и маршруты:
+
+1. **[http://localhost:8090/index](http://localhost:8090/index)**
+
+    * **Назначение:** Главная страница приложения, вывод через шаблон index.html модуля frontend-service.
+    * **Вывод через браузер:** HTML-шаблон index.html.
+    * **Дополнительная информация:** Ммаршруты запускаются в модуле frontend-service на порту 8082.
+
+2. **[http://localhost:8090/email-page](http://localhost:8090/email-page)**
+
+    * **Назначение:** Страница отправки email-сообщений (шаблон из frontend-service).
+    * **Вывод через браузер:** HTML-шаблон email-page.html.
+    * **Дополнительная информация:** В модуле frontend-service, в шаблонах `templates`.
+
+3. **[http://localhost:8090/oops](http://localhost:8090/oops)**
+
+    * **Назначение:** Универсальная страница ошибок.
+    * **Вывод через браузер:** HTML-шаблон oops.html.
+    * **Дополнительная информация:** В модуле frontend-service, в шаблонах `templates`.
+
+4. **[http://localhost:8090/edit-item](http://localhost:8090/edit-item)**
+
+    * **Назначение:** Страница редактирования элемента (если используется).
+    * **Вывод через браузер:** HTML-шаблон edit-item.html.
+    * **Дополнительная информация:** В модуле frontend-service, в шаблонах `templates`.
+
+5. **[http://localhost:8090/api/images/](http://localhost:8090/api/images/)**
+
+    * **Назначение:** REST API микросервиса image-hosting.
+    * **Вывод через браузер:** JSON-ответы, доступ через REST-клиенты.
+    * **Дополнительная информация:** Сервис image-hosting запускается на порту 8084, с маршрутами через api-gateway.
+
+6. **[http://localhost:8082](http://localhost:8082)**
+
+    * **Назначение:** Прямой доступ к frontend-service (не рекомендуется использовать напрямую, только через gateway).
+    * **Вывод через браузер:** HTML-шаблоны.
+    * **Дополнительная информация:** В модуле frontend-service, в шаблонах `templates`.
+
+7. **[http://localhost:8084](http://localhost:8084)**
+
+    * **Назначение:** Прямой доступ к image-hosting API.
+    * **Вывод через браузер:** JSON-данные.
+    * **Дополнительная информация:** Выполняется в контроллерах с конфигурациями REST.
+
+#### Проверка работоспособности
+
+- Последовательность проверки:
+
+  - Запустить все сервисы в указанном порядке.
+  - Открыть ссылку [http://localhost:8090/index](http://localhost:8090/index).
+  - Последовательно проверить другие страницы и API-методы [по ссылкам, указанным в п." Порядок запуска модулей"](#start-list).
+
+<br><br><br><br>

@@ -1,4 +1,25 @@
 # Микросервис api-gateway
+### Порядок запуска модулей
+Использовать следующую последовательность команд для корректного запуска:
+
+```bash
+cd frontend-service
+mvn clean install
+mvn spring-boot:run
+
+cd ../image-hosting
+mvn clean install
+mvn spring-boot:run
+
+cd ../api-gateway
+mvn clean install
+mvn spring-boot:run
+```
+Главную страницу открывать по адресу:
+```
+http://localhost:8090/index
+```
+
 ## Запуск для микросервиса api-gateway
 
 - Через IDE, где нажать Run в главном классе 'ApiGatewayApplication'
@@ -24,7 +45,7 @@
 
 Команда для проверки всех портов задействованых в проекте:
 ```bash
-  netstat -ano | findstr ":8090" ":8081" ":8082" ":8084"
+  netstat -ano | findstr ":8090" ":8082" ":8084"
   ```
 Команда остановить запущенный микросервис:
   ```bash

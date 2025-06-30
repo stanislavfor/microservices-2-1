@@ -164,22 +164,25 @@
 <body>
 <div class="header"></div>
 <h2>Edit Image</h2>
-<!--<form class="input" th:action="@{/images/update/{id}(id=${item.id})}" method="post" enctype="multipart/form-data">-->
-<form th:action="@{/images/update/{filename}(filename=${item.link})}" method="post" enctype="multipart/form-data">
-<!--    <img th:src="@{'/uploads/images/' + ${item.link}}" alt="image">-->
-    <img th:src="@{'/uploads/images/' + ${item.link}}" alt="image">
-    <div style="display: flex; justify-content: flex-start;">
-        <p>ID: </p>
-        <p th:text="${item.id}">10</p>
-    </div>
-    <input type="hidden" name="id" th:value="${item.id}" />
-    <input class="input" type="text" name="name" th:value="${item.name}">
-    <input class="input" type="text" name="description" th:value="${item.description}">
-    <!-- Убираем th:value для поля file -->
-    <input class="input" type="text" name="link">
-    <span></span>
-    <button type="submit" class="button">Save</button>
-</form>
+<div th:if="${item != null}">
+    <form th:action="@{/images/update/{id}(id=${item.id})}" method="post" enctype="multipart/form-data">
+        <img th:src="@{'/uploads/images/' + ${item.link}}" alt="image">
+        <div style="display: flex; justify-content: flex-start;">
+            <p>ID: </p>
+            <p th:text="${item.id}">10</p>
+        </div>
+        <input type="hidden" name="id" th:value="${item.id}" />
+        <input class="input" type="text" name="name" th:value="${item.name}">
+        <input class="input" type="text" name="description" th:value="${item.description}">
+        <input class="input" type="text" name="link" th:value="${item.link}">
+        <span></span>
+        <button type="submit" class="button">Save</button>
+    </form>
+</div>
+<div th:if="${item == null}">
+    <span>Изображение не найдено</span>
+</div>
+
 
 <br>
 <br>

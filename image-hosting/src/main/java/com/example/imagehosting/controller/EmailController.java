@@ -4,9 +4,7 @@ import com.example.imagehosting.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -20,76 +18,37 @@ public class EmailController {
         this.emailService = emailService;
     }
 
+    // GET /email-page Возвращает страницу с формой отправки сообщения. Проксируется через gateway как /email-page.
     @GetMapping("/email-page")
-    public String showForm() {
-        return "email-page";
+    public String showForm(Model model, @RequestParam(value = "message", required = false) String message) {
+        // Показываем flash-сообщение, если есть
+        model.addAttribute("message", message);
+        return "email-page"; // Thymeleaf-шаблон email-page.html должен быть в frontend-service/templates
     }
 
-    @PostMapping("/sendEmail")
-    public String sendEmail(@RequestParam("username") String username,
-                            @RequestParam("email") String email,
-                            @RequestParam("message") String message,
-                            Model model) {
+    // POST /email Обрабатывает отправку сообщения с формы. Gateway проксирует POST /api/email -> /email (c StripPrefix=1).
+    @PostMapping("/email")
+    public String sendEmail(
+            @RequestParam("username") String username,
+            @RequestParam("email") String email,
+            @RequestParam("message") String message,
+            Model model
+    ) {
+        // Примитивная валидация (можно заменить на @Valid и отдельный DTO)
+        if (username == null || username.trim().isEmpty() ||
+                email == null || email.trim().isEmpty() ||
+                message == null || message.trim().isEmpty()) {
+            model.addAttribute("message", "Все поля обязательны для заполнения!");
+            return "email-page"; // Вернем на форму с ошибкой
+        }
         try {
             emailService.saveEmail(username, email, message);
-            model.addAttribute("message", "Сообщение email отправлено!");
+            // После успешной отправки — редиректим с flash message
+            return "redirect:/email-page?message=Сообщение успешно отправлено!";
         } catch (IOException e) {
-            model.addAttribute("message", "Ошибка отправки сообщения email.");
+            // Логируем ошибку, можно отправить на страницу oops или снова на форму
             e.printStackTrace();
+            return "redirect:/oops";
         }
-        return "email-page";
     }
 }
-
-
-//package com.example.controller;
-//
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestParam;
-//
-//import java.io.BufferedWriter;
-//import java.io.FileWriter;
-//import java.io.IOException;
-//import java.time.LocalDateTime;
-//import java.time.format.DateTimeFormatter;
-//
-//@Controller
-//public class EmailController {
-//
-//    @GetMapping("/images/email-page")
-//    public String showForm() {
-//        return "email-page";
-//    }
-//
-//    @PostMapping("/images/sendEmail")
-//    public String sendEmail(@RequestParam("username") String username,
-//                            @RequestParam("email") String email,
-//                            @RequestParam("message") String message,
-//                            Model model) {
-//        String filePath = "uploads/messages.txt";
-//        LocalDateTime now = LocalDateTime.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        String formattedDate = now.format(formatter);
-//
-//        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-//            writer.write("Date: " + formattedDate);
-//            writer.newLine();
-//            writer.write("Username: " + username);
-//            writer.newLine();
-//            writer.write("Email: " + email);
-//            writer.newLine();
-//            writer.write("Message: " + message);
-//            writer.newLine();
-//            writer.write("--------------------------------------------------");
-//            writer.newLine();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        model.addAttribute("message", "Email sent successfully!");
-//        return "email-page.html";
-//    }
-//}

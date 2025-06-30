@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>oops</title>
+    <title>Ошибка</title>
     <link rel="icon" th:href="@{/favicon.ico}" sizes="any" type="image/x-icon">
     <style>
         body {
@@ -19,6 +19,7 @@
             min-height: 100vh;
             background: #BFFF7E;
         }
+
         .email-button {
             padding: 10px 20px;
             background-color: #BFFF7E;
@@ -44,21 +45,16 @@
 </head>
 
 <body>
-    <h2 style="font-size: 36px;">УПС!</h2>
-    <p>Что-то пошло не так. Приходите позже.</p>
-    <form th:action="@{/index#tariffs}" method="get" target="_self" style="margin-top: 5px;">
-        <button class="email-button">на Главную</button>
-    </form>
-    <br><br><br>
-    <svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
-        <!-- Фон -->
+    <h2 style="font-size: 36px;">УПС! OOPS!</h2>
+    <p>Что-то пошло не так.</p>
+    <a th:href="@{/index#tariffs}" class="email-button">на Главную</a>
+    <br><br><br><svg width="80%" height="500" xmlns="http://www.w3.org/2000/svg">
         <rect width="100%" height="100%" fill="#f8f8f8" />
-        <!-- Текст -->
         <text x="50%" y="20%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="50" fill="#333">
-            <tspan x="50%" dy="1.2em">Код ошибки</tspan>
-            <tspan x="50%" dy="1.2em">302</tspan>
-            <tspan x="50%" dy="1.2em">"Что-то пошло не так."</tspan>
-            <tspan x="50%" dy="1.2em">Приходите позже.</tspan>
+            <tspan x="50%" dy="1.2em" font-size="28" th:text="${status} ?: 'Error'">Error</tspan>
+            <tspan x="50%" dy="1.2em" font-size="28" th:text="${error} ?: 'Произошла ошибка'">Произошла ошибка</tspan>
+            <tspan x="50%" dy="1.2em" font-size="36">Error code:</tspan>
+            <tspan x="50%" dy="1.8em" font-size="24" th:text="${message} ?: 'Попробуйте позже'">Попробуйте позже</tspan>
         </text>
     </svg>
 </body>

@@ -1,4 +1,24 @@
 # Микросервис frontend-service
+### Порядок запуска модулей
+Использовать следующую последовательность команд для корректного запуска:
+
+```bash
+cd frontend-service
+mvn clean install
+mvn spring-boot:run
+
+cd ../image-hosting
+mvn clean install
+mvn spring-boot:run
+
+cd ../api-gateway
+mvn clean install
+mvn spring-boot:run
+```
+Главную страницу открывать по адресу:
+```
+http://localhost:8090/index
+```
 ## Запуск для микросервиса frontend-service
 
 1. Перейти в терминале к модулю:  ```cd frontend-service```
@@ -16,6 +36,8 @@
 <br>
 
 **Примечание:** если НЕ установлен Maven требуется запустить с командой: ```./mvnw spring-boot:run ```
+
+**В микросервисной архитектуре, особенно с REST, необходимо отдавать html-шаблоны только из frontend-сервиса.**
 
 <br>
 4. После запуска сервис доступен по адресу, если настроен application.yml, по адресу: http://localhost:8090/

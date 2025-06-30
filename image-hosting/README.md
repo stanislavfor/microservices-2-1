@@ -1,4 +1,24 @@
 # Микросервис image-hosting
+### Порядок запуска модулей
+Использовать следующую последовательность команд для корректного запуска:
+
+```bash
+cd frontend-service
+mvn clean install
+mvn spring-boot:run
+
+cd ../image-hosting
+mvn clean install
+mvn spring-boot:run
+
+cd ../api-gateway
+mvn clean install
+mvn spring-boot:run
+```
+Главную страницу открывать по адресу:
+```
+http://localhost:8084/index
+```
 ## Запуск для модуля image-hosting
 
 1. Выполнить в корне модуля image-hosting:
@@ -16,11 +36,11 @@
 
 Команда для проверки всех портов задействованых в проекте:
 ```bash
-    netstat -ano | findstr ":8090" ":8081" ":8082" ":8084"
+    netstat -ano | findstr ":8090" :8082" ":8084"
  ```
 Команда остановить запущенный микросервис:
    ```bash
-    Stop-Process -Id (Get-NetTCPConnection -LocalPort 8084).OwningProcess -Force
+    Stop-Process -Id (Get-NetTCPConnection -LocalPort 8090).OwningProcess -Force
    ```
 ##
 #### Страница авторизации (login.html):
@@ -121,6 +141,148 @@ System.out.println(matches);
 // Должно быть true
 
 ```
+
+## Список методов и fetch-примеров для image-hosting (порт 8084)
+В этом списке REST-запросов к сервису `image-hosting` (порт 8084) даны примеры вызова через JavaScript (`fetch`).
+В этом списке указаны стандартные эндпоинты из контроллера `ImageController` приложения:
+
+
+### 1. Получить все изображения (галерея)
+
+**GET /images**
+
+```js
+fetch('http://localhost:8084/images')
+  .then(res => res.json())
+  .then(console.log);
+```
+
+### 2. Получить изображение по ID
+
+**GET /images/{id}**
+
+```js
+fetch('http://localhost:8084/images/73')
+  .then(res => res.json())
+  .then(console.log);
+```
+
+
+### 3. Загрузить новое изображение (multipart/form-data)
+
+**POST /images**
+(Загрузка через форму — файл, имя, описание)
+
+```js
+const formData = new FormData();
+formData.append("name", "Мое изображение");
+formData.append("description", "Описание");
+formData.append("file", fileInput.files[0]); // fileInput — input type="file"
+
+fetch('http://localhost:8084/images', {
+  method: 'POST',
+  body: formData
+})
+  .then(res => res.text())
+  .then(console.log);
+```
+Важно:
+> Через fetch можно отправлять файлы только при наличии файла в input, из браузера.
+> Или можно также использовать Postman.
+
+
+### 4. Сохранить новое изображение (JSON, не файл)
+
+**POST /images**
+(Если backend поддерживает работу через JSON, а не multipart — стандартный REST):
+
+```js
+fetch('http://localhost:8084/images', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: "Фото", description: "desc", link: "somefile.jpg" })
+})
+  .then(res => res.json())
+  .then(console.log);
+```
+
+### 5. Обновить изображение по ID (JSON)
+
+**PUT /images/{id}**
+
+```js
+fetch('http://localhost:8084/images/73', {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: "Новое имя", description: "Новое описание", link: "file.jpg" })
+})
+  .then(res => res.json())
+  .then(console.log);
+```
+
+### 6. Удалить изображение по ID
+
+**DELETE /images/{id}**
+
+```js
+fetch('http://localhost:8084/images/73', { method: 'DELETE' })
+  .then(res => console.log('Deleted!', res.status));
+```
+
+### 7. Получить изображение по имени файла
+
+**GET /images/by-filename/{filename}**
+
+```js
+fetch('http://localhost:8084/images/by-filename/название_файла.jpg')
+  .then(res => res.json())
+  .then(console.log);
+```
+
+### 8. Отправка email-сообщения (если EmailController работает на 8084)
+
+**POST /email**
+
+```js
+const formData = new FormData();
+formData.append("username", "Имя");
+formData.append("email", "email@example.com");
+formData.append("message", "Текст сообщения");
+
+fetch('http://localhost:8084/email', {
+  method: 'POST',
+  body: formData
+})
+  .then(res => res.text())
+  .then(console.log);
+```
+
+
+### 9. Статичные файлы (картинки)
+
+**GET /uploads/images/{filename}**
+(Прямой доступ к картинке, если маппинг в Spring на папку `/uploads/images` настроен правильно)
+
+```js
+// Просто ссылка <img src="http://localhost:8084/uploads/images/файл.jpg">
+```
+
+
+## Краткая сводка эндпоинтов
+
+| **Метод**     | **URL**                            | **Описание**       
+```
+   GET       /images                          - Все изображения  
+   GET       /images/{id}                     - По id               
+   POST      /images (multipart или json)     - Добавить            
+   PUT       /images/{id} (json)              - Обновить             
+   DELETE    /images/{id}                     - Удалить              
+   GET       /images/by-filename/{filename}   - По имени файла      
+   GET       /uploads/images/{filename}       - Картинка (статик)  
+   POST      /email                           - Отправка сообщения  
+
+```
+
 
 
 <br><br>

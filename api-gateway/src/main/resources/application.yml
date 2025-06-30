@@ -1,37 +1,74 @@
 server:
-  port: 8090  # Порт для API Gateway
+  port: 8090
 
 spring:
   cloud:
     gateway:
       routes:
-        - id: frontend-service
+        # Frontend routes for static HTML
+        - id: frontend-root
+          uri: http://localhost:8082
+          predicates:
+            - Path=/
+        - id: frontend-index
           uri: http://localhost:8082
           predicates:
             - Path=/index
-            - Path=/email-page
-            - Path=/oops
-        - id: image-ui
-          uri: http://localhost:8084
+        - id: frontend-email-page
+          uri: http://localhost:8082
           predicates:
-            - Path=/images/**
+            - Path=/email-page
+        - id: frontend-edit-item
+          uri: http://localhost:8082
+          predicates:
+            - Path=/edit-item
+        - id: frontend-oops
+          uri: http://localhost:8082
+          predicates:
+            - Path=/oops
+        - id: frontend-favicon
+          uri: http://localhost:8082
+          predicates:
+            - Path=/favicon.ico
 
+        # Image API route (to be handled by image-hosting service)
         - id: image-api
           uri: http://localhost:8084
           predicates:
             - Path=/api/images/**
           filters:
-            - StripPrefix=1
-        - id: images-edit
+#            - StripPrefix=1
+
+        # Email API route (to be handled by image-hosting or email service)
+        - id: email-api
           uri: http://localhost:8084
           predicates:
-            - Path=/images/edit/**
+            - Path=/api/email
+          filters:
+#            - StripPrefix=1
+globalcors:
+  corsConfigurations:
+    '[/**]':  # This applies the CORS rules to all routes
+      allowedOrigins: "http://localhost:8082"  # Allow requests from the frontend (localhost:8082)
+      allowedMethods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+      allowedHeaders: "*"  # Allow all headers
+      allowCredentials: true  # Allow credentials to be passed along with requests
 
 logging:
   level:
-    org.springframework:
-      cloud: DEBUG
-      web: DEBUG
+    root: INFO
+    org.springframework.cloud.gateway: DEBUG  # Log the gateway processing
+    org.springframework.web: DEBUG  # Log Spring web-related processing
 
-  main:
-    web-application-type: reactive
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,actuator"
+  endpoint:
+    health:
+      show-details: "always"  # Shows detailed health information in the actuator health endpoint

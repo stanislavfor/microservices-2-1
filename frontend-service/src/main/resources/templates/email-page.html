@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Images Hosting</title>
-    <link rel="icon" th:href="@{src/main/resources/static/favicon.ico}" sizes="any" type="image/x-icon">
+    <link rel="icon" th:href="@{/favicon.ico}" sizes="any" type="image/x-icon">
     <style>
         body {
             display: flex;
@@ -97,14 +97,17 @@
                 пожалуйста, оставьте свои контактные данные, мы свяжемся с вами указанным способом для уточнения
                 вопросов.</p>
             <h3>Спасибо за проявленный интерес!</h3>
-            <form action="../../../../../src/main/resources#tariffs" target="_self" style="margin-top: 5px;">
+            <form th:action="@{/index#tariffs}" method="get" target="_self" style="margin-top: 5px;">
                 <button class="email-button">на Главную</button>
             </form>
-
         </div>
         <div class="form-block">
+            <!-- Сообщение после отправки формы -->
+            <div th:if="${message}">
+                <div class="alert alert-success" th:text="${message}"></div>
+            </div>
             <h2>Отправьте сообщение</h2>
-            <form th:action="@{/sendEmail}" method="post">
+            <form th:action="@{/api/email}" method="post">
                 <label for="username">Ваше Имя:</label>
                 <input type="text" id="username" name="username" required>
 

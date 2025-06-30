@@ -1,17 +1,21 @@
 package com.example.imagehosting.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
 public class EmailService {
 
-    private static final String FILE_PATH = "uploads/messages.txt";
+    private static final String FILE_PATH = "./uploads/messages.txt";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final int MAX_WORDS_PER_LINE = 11; // Количество слов в одной строке, для читаемости кода
 
@@ -56,6 +60,9 @@ public class EmailService {
         formattedMessage.append(line.toString().trim());
         return formattedMessage.toString();
     }
+
+
+
 }
 
 
